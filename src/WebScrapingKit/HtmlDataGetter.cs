@@ -106,7 +106,7 @@ namespace WebScrapingKit
                         null,
                         0,
                         null,
-                        HtmlDataGetterResult.ParseHtmlFailed
+                        HtmlDataGetterResult.DataNotFound
                         ));
                     Cancellation(cancelToken);
                     Thread.Sleep(_sleepIntervalWhenError);
@@ -139,12 +139,13 @@ namespace WebScrapingKit
                     wholeUrl,
                     id,
                     data,
-                    HtmlDataGetterResult.Success
+                    id == idTo ? HtmlDataGetterResult.FinalDataSuccess : HtmlDataGetterResult.Success
                     ));
 
                 Cancellation(cancelToken);
                 Thread.Sleep(_sleepInterval);
             }
+            IsCollecting = false;
         }
 
         private void GetDataFromHtml(string[] urls, string xpath, IProgress<HtmlData> progress, CancellationToken cancelToken)
@@ -153,9 +154,11 @@ namespace WebScrapingKit
             var doc = new HtmlDocument();
             var web = new WebClient();
             web.Encoding = Encoding.UTF8;
-            foreach (string url in urls)
+            for (int i = 0; i < urls.Length; i++)
             {
                 if (!IsCollecting) break;
+
+                string url = urls[i];
 
                 try
                 {
@@ -186,7 +189,7 @@ namespace WebScrapingKit
                         null,
                         0,
                         null,
-                        HtmlDataGetterResult.ParseHtmlFailed
+                        HtmlDataGetterResult.DataNotFound
                         ));
                     Cancellation(cancelToken);
                     Thread.Sleep(_sleepIntervalWhenError);
@@ -219,12 +222,13 @@ namespace WebScrapingKit
                     url,
                     -1,
                     data,
-                    HtmlDataGetterResult.Success
+                    i == urls.Length - 1 ? HtmlDataGetterResult.FinalDataSuccess : HtmlDataGetterResult.Success
                     ));
 
                 Cancellation(cancelToken);
                 Thread.Sleep(_sleepInterval);
             }
+            IsCollecting = false;
         }
 
         private void Cancellation(CancellationToken cancelToken)

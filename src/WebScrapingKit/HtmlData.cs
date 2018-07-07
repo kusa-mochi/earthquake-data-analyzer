@@ -34,7 +34,11 @@ namespace WebScrapingKit
         {
             Url = url;
             _id = id;
-            data.CopyTo(Data, 0);
+            if(data != null)
+            {
+                Data = new string[data.Length];
+                data.CopyTo(Data, 0);
+            }
             Result = result;
         }
 

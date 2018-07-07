@@ -1,0 +1,30 @@
+﻿<Window x:Class="SampleApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:vm="clr-namespace:SampleApp.ViewModels"
+        Width="800" SizeToContent="Height">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+    <StackPanel>
+        <Grid x:Name="InputArea">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="URL"/>
+            <TextBlock Text="探索パターン" Grid.Row="1"/>
+            <TextBox Grid.Column="1" Text="{Binding Urls, FallbackValue=https://www.youtube.com/results?search_query\=google;https://www.youtube.com/results?search_query\=android, Mode=OneWayToSource}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding XPath, FallbackValue=//h3[@class\=\&quot;yt-lockup-title \&quot;]/a, Mode=OneWayToSource}"/>
+        </Grid>
+        <Button Content="スタート" Command="{Binding StartCommand, Mode=OneWay}" IsEnabled="{Binding IsStartButtonEnabled}"/>
+        <Grid x:Name="ResultArea">
+            <ListBox ItemsSource="{Binding Result}" Height="400"/>
+        </Grid>
+    </StackPanel>
+</Window>

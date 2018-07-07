@@ -9,8 +9,9 @@ namespace WebScrapingKit
     public enum HtmlDataGetterResult
     {
         Success = 0,
+        FinalDataSuccess,
         LoadHtmlFailed,
-        ParseHtmlFailed,
+        DataNotFound,
         GetInnerTextFailed
     }
 }
