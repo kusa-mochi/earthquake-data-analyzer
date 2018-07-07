@@ -48,6 +48,12 @@ namespace WebScrapingKit
 
         public Task GetDataFromHtmlAsync(string url, string xpath, int idFrom, int idTo, string urlFooter, IProgress<HtmlData> progress, CancellationToken cancelToken)
         {
+            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url");
+            if (string.IsNullOrEmpty(xpath)) throw new ArgumentNullException("xpath");
+            if (string.IsNullOrEmpty(urlFooter)) throw new ArgumentNullException("urlFooter");
+            if (progress == null) throw new ArgumentNullException("progress");
+            if (cancelToken == null) throw new ArgumentNullException("cancelToken");
+
             return Task.Run(() =>
             {
                 GetDataFromHtml(url, xpath, idFrom, idTo, urlFooter, progress, cancelToken);
@@ -56,6 +62,12 @@ namespace WebScrapingKit
 
         public Task GetDataFromHtmlAsync(string[] urls, string xpath, IProgress<HtmlData> progress, CancellationToken cancelToken)
         {
+            if (urls == null) throw new ArgumentNullException("urls");
+            if (urls.Length == 0) throw new ArgumentException("urls.Length");
+            if (string.IsNullOrEmpty(xpath)) throw new ArgumentNullException("xpath");
+            if (progress == null) throw new ArgumentNullException("progress");
+            if (cancelToken == null) throw new ArgumentNullException("cancelToken");
+
             return Task.Run(() =>
             {
                 GetDataFromHtml(urls, xpath, progress, cancelToken);
@@ -64,6 +76,9 @@ namespace WebScrapingKit
 
         public HtmlDataGetter(int sleepInterval = 2000, int sleepIntervalWhenError = 200)
         {
+            if (sleepInterval < 1) throw new ArgumentOutOfRangeException("sleepInterval");
+            if (sleepIntervalWhenError < 1) throw new ArgumentOutOfRangeException("sleepIntervalWhenError");
+
             _sleepInterval = sleepInterval;
             _sleepIntervalWhenError = sleepIntervalWhenError;
         }
