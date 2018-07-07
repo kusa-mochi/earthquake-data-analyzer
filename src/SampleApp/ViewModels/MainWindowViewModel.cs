@@ -57,14 +57,12 @@ namespace SampleApp.ViewModels
             {
                 switch (result.Result)
                 {
+                    case HtmlDataGetterResult.Success:
+                        break;
                     case HtmlDataGetterResult.FinalDataSuccess:
                         IsStartButtonEnabled = true;
                         break;
-                    case HtmlDataGetterResult.LoadHtmlFailed:
-                        return;
-                    case HtmlDataGetterResult.DataNotFound:
-                        return;
-                    case HtmlDataGetterResult.GetInnerTextFailed:
+                    default:
                         return;
                 }
 
