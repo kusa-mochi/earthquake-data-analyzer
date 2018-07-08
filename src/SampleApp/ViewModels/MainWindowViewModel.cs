@@ -51,7 +51,6 @@ namespace SampleApp.ViewModels
 
         #region データメンバ
 
-        private HtmlDataGetter _dataGetter = new HtmlDataGetter();
         private string[] _urlList = null;
 
         #endregion
@@ -61,8 +60,7 @@ namespace SampleApp.ViewModels
         private async void ExecuteStartCommand()
         {
             IsStartButtonEnabled = false;
-
-            var cancelSrc = new CancellationTokenSource();
+            var webScraper = new HtmlDataGetter();
             var progress = new Progress<HtmlData>((result) =>
             {
                 switch (result.Result)
@@ -78,19 +76,11 @@ namespace SampleApp.ViewModels
 
                 Result.AddRange(result.Data);
             });
+            var cancelSrc = new CancellationTokenSource();
 
             try
             {
-                //await _dataGetter.GetDataFromHtmlAsync(
-                //    new string[] {
-                //        @"https://www.youtube.com/results?search_query=google",
-                //        @"https://www.youtube.com/results?search_query=android"
-                //    },
-                //    @"//h3[@class=""yt-lockup-title ""]/a",
-                //    progress,
-                //    cancelSrc.Token
-                //    );
-                await _dataGetter.GetDataFromHtmlAsync(
+                await webScraper.GetDataFromHtmlAsync(
                     _urlList,
                     XPath,
                     progress,
