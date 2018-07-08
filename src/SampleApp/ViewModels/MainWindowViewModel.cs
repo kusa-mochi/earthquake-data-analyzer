@@ -9,6 +9,8 @@ namespace SampleApp.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        #region 変更通知プロパティ
+
         private string _urls;
         public string Urls
         {
@@ -45,8 +47,16 @@ namespace SampleApp.ViewModels
         public DelegateCommand StartCommand =>
             _StartCommand ?? (_StartCommand = new DelegateCommand(ExecuteStartCommand));
 
+        #endregion
+
+        #region データメンバ
+
         private HtmlDataGetter _dataGetter = new HtmlDataGetter();
         private string[] _urlList = null;
+
+        #endregion
+
+        #region コマンド
 
         private async void ExecuteStartCommand()
         {
@@ -94,8 +104,14 @@ namespace SampleApp.ViewModels
             }
         }
 
+        #endregion
+
+        #region コンストラクタ
+
         public MainWindowViewModel()
         {
         }
+
+        #endregion
     }
 }

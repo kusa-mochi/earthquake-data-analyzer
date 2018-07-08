@@ -11,13 +11,23 @@ namespace WebScrapingKit
 {
     public class HtmlDataGetter
     {
+        #region プロパティ
+
         public bool IsCollecting { get; private set; } = false;
+
+        #endregion
+
+        #region データメンバ
 
         // 連続アクセスするときの時間間隔[msec]
         private int _sleepInterval = 2000;
 
         // 連続アクセスでデータ取得に失敗したときの時間間隔[msec]
         private int _sleepIntervalWhenError = 200;
+
+        #endregion
+
+        #region Publicメソッド
 
         public string[] GetDataFromHtml(string url, string xpath)
         {
@@ -82,6 +92,10 @@ namespace WebScrapingKit
             _sleepInterval = sleepInterval;
             _sleepIntervalWhenError = sleepIntervalWhenError;
         }
+
+        #endregion
+
+        #region Privateメソッド
 
         private void GetDataFromHtml(string url, string xpath, int idFrom, int idTo, string urlFooter, IProgress<HtmlData> progress, CancellationToken cancelToken)
         {
@@ -269,5 +283,7 @@ namespace WebScrapingKit
 
             return output;
         }
+
+        #endregion
     }
 }
