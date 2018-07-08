@@ -163,7 +163,7 @@ namespace WebScrapingKit
                     continue;
                 }
 
-                // 画面のデータグリッドに情報を表示する。
+                // 取得した情報を呼び出し元に返す。
                 progress.Report(new HtmlData(
                     wholeUrl,
                     id,
@@ -246,7 +246,7 @@ namespace WebScrapingKit
                     continue;
                 }
 
-                // 画面のデータグリッドに情報を表示する。
+                // 取得した情報を呼び出し元に返す。
                 progress.Report(new HtmlData(
                     url,
                     -1,
