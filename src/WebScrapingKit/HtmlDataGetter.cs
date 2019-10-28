@@ -56,6 +56,34 @@ namespace WebScrapingKit
             return output;
         }
 
+        public string[] GetAttributeFromHtml(string url, string xpath, string attributeName)
+        {
+            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url");
+            if (string.IsNullOrEmpty(xpath)) throw new ArgumentNullException("xpath");
+            if (string.IsNullOrEmpty(attributeName)) throw new ArgumentNullException("attributeName");
+
+            var doc = new HtmlDocument();
+            var web = new WebClient();
+            web.Encoding = Encoding.UTF8;
+            try
+            {
+                doc.LoadHtml(web.DownloadString(url));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("GetHtmlメソッドで，HTML取得時にエラーが発生しました。", ex);
+            }
+
+            var targetCollection = doc.DocumentNode.SelectNodes(xpath);
+            if (targetCollection == null)
+            {
+                throw new MissingXPathException("GetHtmlメソッドで，指定したxpathに該当するHTML要素が見つかりませんでした。");
+            }
+
+            string[] output = GetAttributes(targetCollection, attributeName);
+            return output;
+        }
+
         public Task GetDataFromHtmlAsync(string url, string xpath, int idFrom, int idTo, string urlFooter, IProgress<HtmlData> progress, CancellationToken cancelToken)
         {
             if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url");
@@ -279,6 +307,18 @@ namespace WebScrapingKit
             for (int i = 0; i < c.Count; i++)
             {
                 output[i] = c[i].InnerText.Replace("\r", "").Replace("\n", "");
+            }
+
+            return output;
+        }
+
+        private string[] GetAttributes(HtmlNodeCollection c, string attributeName)
+        {
+            string[] output = new string[c.Count];
+            for (int i = 0; i < c.Count; i++)
+            {
+                string attributeValue = c[i].GetAttributeValue(attributeName, null);
+                output[i] = attributeValue;
             }
 
             return output;
