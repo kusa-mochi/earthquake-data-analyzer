@@ -84,19 +84,19 @@ namespace WebScrapingKit
             return output;
         }
 
-        public Task GetDataFromHtmlAsync(string url, string xpath, int idFrom, int idTo, string urlFooter, IProgress<HtmlData> progress, CancellationToken cancelToken)
-        {
-            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url");
-            if (string.IsNullOrEmpty(xpath)) throw new ArgumentNullException("xpath");
-            if (string.IsNullOrEmpty(urlFooter)) throw new ArgumentNullException("urlFooter");
-            if (progress == null) throw new ArgumentNullException("progress");
-            if (cancelToken == null) throw new ArgumentNullException("cancelToken");
+        //public Task GetDataFromHtmlAsync(string url, string xpath, int idFrom, int idTo, string urlFooter, IProgress<HtmlData> progress, CancellationToken cancelToken)
+        //{
+        //    if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url");
+        //    if (string.IsNullOrEmpty(xpath)) throw new ArgumentNullException("xpath");
+        //    if (string.IsNullOrEmpty(urlFooter)) throw new ArgumentNullException("urlFooter");
+        //    if (progress == null) throw new ArgumentNullException("progress");
+        //    if (cancelToken == null) throw new ArgumentNullException("cancelToken");
 
-            return Task.Run(() =>
-            {
-                GetDataFromHtml(url, xpath, idFrom, idTo, urlFooter, progress, cancelToken);
-            });
-        }
+        //    return Task.Run(() =>
+        //    {
+        //        GetDataFromHtml(url, xpath, idFrom, idTo, urlFooter, progress, cancelToken);
+        //    });
+        //}
 
         public Task GetDataFromHtmlAsync(string[] urls, string xpath, IProgress<HtmlData> progress, CancellationToken cancelToken)
         {
@@ -109,6 +109,20 @@ namespace WebScrapingKit
             return Task.Run(() =>
             {
                 GetDataFromHtml(urls, xpath, progress, cancelToken);
+            });
+        }
+
+        public Task GetAttributeFromHtmlAsync(string[] urls, string xpath, string attributeName, IProgress<HtmlData> progress, CancellationToken cancelToken)
+        {
+            if (urls == null) throw new ArgumentNullException("urls");
+            if (urls.Length == 0) throw new ArgumentException("urls.Length");
+            if (string.IsNullOrEmpty(xpath)) throw new ArgumentNullException("xpath");
+            if (progress == null) throw new ArgumentNullException("progress");
+            if (cancelToken == null) throw new ArgumentNullException("cancelToken");
+
+            return Task.Run(() =>
+            {
+                GetAttributeFromHtml(urls, xpath, attributeName, progress, cancelToken);
             });
         }
 
@@ -125,85 +139,85 @@ namespace WebScrapingKit
 
         #region Privateメソッド
 
-        private void GetDataFromHtml(string url, string xpath, int idFrom, int idTo, string urlFooter, IProgress<HtmlData> progress, CancellationToken cancelToken)
-        {
-            IsCollecting = true;
-            var doc = new HtmlDocument();
-            var web = new WebClient();
-            web.Encoding = Encoding.UTF8;
-            for (int id = idFrom; id <= idTo && IsCollecting; id++)
-            {
-                string wholeUrl = url + id.ToString() + urlFooter;
-                try
-                {
-                    doc.LoadHtml(web.DownloadString(wholeUrl));
-                }
-                catch
-                {
-                    // データが取得できなかった旨を呼び出し元に通知する。
-                    progress.Report(new HtmlData(
-                        null,
-                        0,
-                        null,
-                        HtmlDataGetterResult.LoadHtmlFailed
-                        ));
-                    Cancellation(cancelToken);
-                    Thread.Sleep(_sleepIntervalWhenError);
-                    continue;
-                }
+        //private void GetDataFromHtml(string url, string xpath, int idFrom, int idTo, string urlFooter, IProgress<HtmlData> progress, CancellationToken cancelToken)
+        //{
+        //    IsCollecting = true;
+        //    var doc = new HtmlDocument();
+        //    var web = new WebClient();
+        //    web.Encoding = Encoding.UTF8;
+        //    for (int id = idFrom; id <= idTo && IsCollecting; id++)
+        //    {
+        //        string wholeUrl = url + id.ToString() + urlFooter;
+        //        try
+        //        {
+        //            doc.LoadHtml(web.DownloadString(wholeUrl));
+        //        }
+        //        catch
+        //        {
+        //            // データが取得できなかった旨を呼び出し元に通知する。
+        //            progress.Report(new HtmlData(
+        //                null,
+        //                0,
+        //                null,
+        //                HtmlDataGetterResult.LoadHtmlFailed
+        //                ));
+        //            Cancellation(cancelToken);
+        //            Thread.Sleep(_sleepIntervalWhenError);
+        //            continue;
+        //        }
 
-                //指定したXPathをもとに文を取得する。
-                var targetCollection = doc.DocumentNode.SelectNodes(xpath);
+        //        //指定したXPathをもとに文を取得する。
+        //        var targetCollection = doc.DocumentNode.SelectNodes(xpath);
 
-                // データが得られなかった場合
-                if (targetCollection == null)
-                {
-                    // データが取得できなかった旨を呼び出し元に通知する。
-                    progress.Report(new HtmlData(
-                        null,
-                        0,
-                        null,
-                        HtmlDataGetterResult.DataNotFound
-                        ));
-                    Cancellation(cancelToken);
-                    Thread.Sleep(_sleepIntervalWhenError);
-                    continue;
-                }
+        //        // データが得られなかった場合
+        //        if (targetCollection == null)
+        //        {
+        //            // データが取得できなかった旨を呼び出し元に通知する。
+        //            progress.Report(new HtmlData(
+        //                null,
+        //                0,
+        //                null,
+        //                HtmlDataGetterResult.DataNotFound
+        //                ));
+        //            Cancellation(cancelToken);
+        //            Thread.Sleep(_sleepIntervalWhenError);
+        //            continue;
+        //        }
 
-                string[] data = new string[targetCollection.Count];
+        //        string[] data = new string[targetCollection.Count];
 
-                try
-                {
-                    data = GetInnerTexts(targetCollection);
-                }
-                catch
-                {
-                    // データの取得に失敗した場合
-                    // データが取得できなかった旨を呼び出し元に通知する。
-                    progress.Report(new HtmlData(
-                        null,
-                        0,
-                        null,
-                        HtmlDataGetterResult.GetInnerTextFailed
-                        ));
-                    Cancellation(cancelToken);
-                    Thread.Sleep(_sleepIntervalWhenError);
-                    continue;
-                }
+        //        try
+        //        {
+        //            data = GetInnerTexts(targetCollection);
+        //        }
+        //        catch
+        //        {
+        //            // データの取得に失敗した場合
+        //            // データが取得できなかった旨を呼び出し元に通知する。
+        //            progress.Report(new HtmlData(
+        //                null,
+        //                0,
+        //                null,
+        //                HtmlDataGetterResult.GetInnerTextFailed
+        //                ));
+        //            Cancellation(cancelToken);
+        //            Thread.Sleep(_sleepIntervalWhenError);
+        //            continue;
+        //        }
 
-                // 取得した情報を呼び出し元に返す。
-                progress.Report(new HtmlData(
-                    wholeUrl,
-                    id,
-                    data,
-                    id == idTo ? HtmlDataGetterResult.FinalDataSuccess : HtmlDataGetterResult.Success
-                    ));
+        //        // 取得した情報を呼び出し元に返す。
+        //        progress.Report(new HtmlData(
+        //            wholeUrl,
+        //            id,
+        //            data,
+        //            id == idTo ? HtmlDataGetterResult.FinalDataSuccess : HtmlDataGetterResult.Success
+        //            ));
 
-                Cancellation(cancelToken);
-                Thread.Sleep(_sleepInterval);
-            }
-            IsCollecting = false;
-        }
+        //        Cancellation(cancelToken);
+        //        Thread.Sleep(_sleepInterval);
+        //    }
+        //    IsCollecting = false;
+        //}
 
         private void GetDataFromHtml(string[] urls, string xpath, IProgress<HtmlData> progress, CancellationToken cancelToken)
         {
@@ -268,6 +282,89 @@ namespace WebScrapingKit
                         0,
                         null,
                         HtmlDataGetterResult.GetInnerTextFailed
+                        ));
+                    Cancellation(cancelToken);
+                    Thread.Sleep(_sleepIntervalWhenError);
+                    continue;
+                }
+
+                // 取得した情報を呼び出し元に返す。
+                progress.Report(new HtmlData(
+                    url,
+                    -1,
+                    data,
+                    i == urls.Length - 1 ? HtmlDataGetterResult.FinalDataSuccess : HtmlDataGetterResult.Success
+                    ));
+
+                Cancellation(cancelToken);
+                Thread.Sleep(_sleepInterval);
+            }
+            IsCollecting = false;
+        }
+
+        private void GetAttributeFromHtml(string[] urls, string xpath, string attributeName, IProgress<HtmlData> progress, CancellationToken cancelToken)
+        {
+            IsCollecting = true;
+            var doc = new HtmlDocument();
+            var web = new WebClient();
+            web.Encoding = Encoding.UTF8;
+            for (int i = 0; i < urls.Length; i++)
+            {
+                if (!IsCollecting) break;
+
+                string url = urls[i];
+
+                try
+                {
+                    doc.LoadHtml(web.DownloadString(url));
+                }
+                catch
+                {
+                    // データが取得できなかった旨を呼び出し元に通知する。
+                    progress.Report(new HtmlData(
+                        null,
+                        0,
+                        null,
+                        HtmlDataGetterResult.LoadHtmlFailed
+                        ));
+                    Cancellation(cancelToken);
+                    Thread.Sleep(_sleepIntervalWhenError);
+                    continue;
+                }
+
+                //指定したXPathをもとに文を取得する。
+                var targetCollection = doc.DocumentNode.SelectNodes(xpath);
+
+                // データが得られなかった場合
+                if (targetCollection == null)
+                {
+                    // データが取得できなかった旨を呼び出し元に通知する。
+                    progress.Report(new HtmlData(
+                        null,
+                        0,
+                        null,
+                        HtmlDataGetterResult.DataNotFound
+                        ));
+                    Cancellation(cancelToken);
+                    Thread.Sleep(_sleepIntervalWhenError);
+                    continue;
+                }
+
+                string[] data = new string[targetCollection.Count];
+
+                try
+                {
+                    data = GetAttributes(targetCollection, attributeName);
+                }
+                catch
+                {
+                    // データの取得に失敗した場合
+                    // データが取得できなかった旨を呼び出し元に通知する。
+                    progress.Report(new HtmlData(
+                        null,
+                        0,
+                        null,
+                        HtmlDataGetterResult.GetAttributeFailed
                         ));
                     Cancellation(cancelToken);
                     Thread.Sleep(_sleepIntervalWhenError);

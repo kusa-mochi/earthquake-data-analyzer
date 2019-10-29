@@ -12,6 +12,7 @@ namespace WebScrapingKit
         FinalDataSuccess,
         LoadHtmlFailed,
         DataNotFound,
-        GetInnerTextFailed
+        GetInnerTextFailed,
+        GetAttributeFailed
     }
 }
