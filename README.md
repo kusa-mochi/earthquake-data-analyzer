@@ -1,1 +1,1 @@
-# web-scraping-kit
+# earthquake-data-analyzer
